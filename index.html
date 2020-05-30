@@ -1,0 +1,54 @@
+
+<html>
+  <head>
+    <title>Spux Link</title>
+    <link rel="stylesheet" href="https://spux.org/css/spux.css" />
+  </head>
+  <body>
+    <script type="module">
+      import { html, render } from 'https://spux.org/web_modules/spux.js'
+
+      render(
+        html`
+          <h2>Spux Link</h2>
+          <hr />
+          <div class="row">
+            <form>
+              <input id="short" class="card w-100" placeholder="short name" />
+              <textarea id="link" class="card w-100" placeholder="link" />
+              <input type="button" value="Create" onClick=${a} class="btn primary">
+                Create Spux Link!
+              </input>
+            </form>
+          </div>
+        `,
+        document.body
+      )
+
+      function a (e) {
+        var short = document.getElementById('short').value
+        var link = document.getElementById('link').value
+        if (!short) return
+        if (!link) return
+        var body = `<script type="application/json" id="data">
+      [
+        {
+          "uri": "${link}"
+        }
+      ]
+    <\/script>
+    <script type="module" src="https://spux.org/modules/link.js"><\/script>`
+
+        fetch(short, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'text/html'
+          },
+          body: body
+        }).then(console.log)
+      }
+    </script>
+  </body>
+</html>
+
+
