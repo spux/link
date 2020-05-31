@@ -1,12 +1,22 @@
-
 <html>
   <head>
     <title>Spux Link</title>
     <link rel="stylesheet" href="https://spux.org/css/spux.css" />
+    <script type="application/json" id="data">
+      [
+        {
+          "@id": "",
+          "uri": "",
+          "short": "",
+          "status": ""
+        }
+      ]
+    </script>
   </head>
   <body>
     <script type="module">
       import { html, render } from 'https://spux.org/web_modules/spux.js'
+      import 'https://unpkg.com/dataisland?module'
 
       render(
         html`
@@ -16,16 +26,17 @@
             <form>
               <input id="short" class="card w-100" placeholder="short name" />
               <textarea id="link" class="card w-100" placeholder="link" />
-              <input type="button" value="Create" onClick=${a} class="btn primary">
+              <input type="button" value="Create" onClick=${create} class="btn primary">
                 Create Spux Link!
               </input>
             </form>
+            <div id="status"></div>
           </div>
         `,
         document.body
       )
 
-      function a (e) {
+      function create (e) {
         var short = document.getElementById('short').value
         var link = document.getElementById('link').value
         if (!short) return
@@ -45,10 +56,17 @@
             'Content-Type': 'text/html'
           },
           body: body
-        }).then(console.log)
+        }).then(response => {
+          console.log(response)
+          if (response && response.status == 201) {
+            di.data.status = `Created  <a href="${response.url}">${response.url}</a>`
+            document.getElementById('status').innerHTML = di.data.status
+          } else {
+            di.data.status = `Failed to create: HTTP response ${response.status} ${response.statusText}`
+            document.getElementById('status').innerHTML = di.data.status
+          }
+        })
       }
     </script>
   </body>
 </html>
-
-
